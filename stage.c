@@ -2,6 +2,8 @@
 #include "main.h"
 
 static SDL_Texture* bulletTexture;
+static SDL_Texture* enemyTexture;
+static float enemySpawnTimer;
 
 static  void fireBullet(void) {
     struct Entity* bullet;
@@ -47,8 +49,8 @@ static void doPlayer() {
         fireBullet();
     }
 
-    player->x += player->dx;
-    player->y += player->dy;
+//    player->x += player->dx;
+//    player->y += player->dy;
 }
 
 static void doBullets(void) {
@@ -74,10 +76,65 @@ static void doBullets(void) {
     }
 }
 
+static void doFighters(void) {
+    struct Entity *e, *prev;
+
+    prev = &stage.fighterHead;
+
+    for (e = stage.fighterHead.next; e != NULL; e = e->next) {
+        e->x += e->dx;
+        e->y += e->dy;
+
+        if (e != player && e->x < -e->w) {
+            if (e == stage.fighterTail) {
+                stage.fighterTail = prev;
+            }
+
+            prev->next = e->next;
+            free(e);
+            e = prev;
+        }
+
+        prev = e;
+    }
+}
+
+static void spawnEnemies(void) {
+    struct Entity *enemy;
+
+    if (--enemySpawnTimer <= 0) {
+        enemy = malloc(sizeof(struct Entity));
+        memset(enemy, 0, sizeof(struct Entity));
+        stage.fighterTail->next = enemy;
+        stage.fighterTail = enemy;
+
+        enemy->x = SCREEN_WIDTH;
+        enemy->y = rand() % SCREEN_HEIGHT;
+        enemy->texture = enemyTexture;
+        SDL_QueryTexture(enemy->texture, NULL, NULL, &enemy->w, &enemy->h);
+
+        enemy->dx = -(2 + (rand() % 4));
+
+        enemySpawnTimer = 30 + (rand() % 60);
+    }
+}
+
+static void drawFighters(void) {
+    struct Entity *e;
+
+    for (e = stage.fighterHead.next; e != NULL; e = e->next) {
+        blit(e->texture, e->x, e->y);
+    }
+}
+
 static void logic(void) {
     doPlayer();
 
+    doFighters();
+
     doBullets();
+
+    spawnEnemies();
 }
 
 static void initPlayer(void) {
@@ -92,10 +149,6 @@ static void initPlayer(void) {
     SDL_QueryTexture(player->texture, NULL, NULL, &player->w, &player->h);
 }
 
-static void drawPlayer(void) {
-    blit(player->texture, player->x, player->y);
-}
-
 static void drawBullets(void) {
     struct Entity *b;
 
@@ -105,10 +158,9 @@ static void drawBullets(void) {
 }
 
 static void draw(void) {
-    drawPlayer();
+    drawFighters();
     drawBullets();
 }
-
 
 void capFrameRate(long* then, float* reminder) {
     long wait, frameTime;
@@ -141,5 +193,6 @@ void initStage(void) {
     initPlayer();
 
     bulletTexture = loadTexture("bullet.png");
+    enemyTexture = loadTexture("enemy.png");
 }
 
