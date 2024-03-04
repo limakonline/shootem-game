@@ -45,12 +45,9 @@ static void doPlayer() {
         player->dx = PLAYER_SPEED;
     }
 
-    if (app.keyboard[SDL_SCANCODE_LCTRL] && player->reload == 0) {
+    if (app.keyboard[SDL_SCANCODE_SPACE] && player->reload == 0) {
         fireBullet();
     }
-
-//    player->x += player->dx;
-//    player->y += player->dy;
 }
 
 static void doBullets(void) {
