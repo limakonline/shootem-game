@@ -4,7 +4,8 @@
 #include "structs.h"
 
 App app;
-Entity player;
-Entity bullet;
+Stage stage;
+struct Entity* player;
+struct Entity bullet;
 
 #endif

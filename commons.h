@@ -5,5 +5,7 @@
 #include <SDL2/SDL_image.h>
 
 #include "defs.h"
+#include "structs.h"
+#include "draw.h"
 
 #endif
