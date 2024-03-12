@@ -22,6 +22,7 @@ struct Entity {
     float dy;
     int health;
     int reload;
+    int side;
     SDL_Texture* texture;
     struct Entity *next;
 };
@@ -29,6 +30,7 @@ struct Entity {
 typedef struct {
     struct Entity fighterHead, *fighterTail;
     struct Entity bulletHead, *bulletTail;
+    int score;
 } Stage;
 
 #endif

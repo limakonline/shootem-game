@@ -48,3 +48,14 @@ void blit_frame(SDL_Texture* texture, int x, int y) {
     // SDL_QueryTexture(texture, NULL, NULL, NULL, &dest.h);
     SDL_RenderCopyEx(app.renderer, texture, &src, &dest, 90, NULL, SDL_FLIP_NONE);
 }
+
+void blit_rect(SDL_Texture* texture, SDL_Rect* src, int x, int y) {
+    SDL_Rect dest;
+
+    dest.x = x;
+    dest.y = y;
+    dest.w = src->w;
+    dest.h = src->h;
+
+    SDL_RenderCopy(app.renderer, texture, src, &dest);
+}
