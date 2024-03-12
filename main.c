@@ -4,6 +4,7 @@
 #include "init.h"
 #include "main.h"
 #include "stage.h"
+#include "text.h"
 
 int main(void) {
 
@@ -15,6 +16,7 @@ int main(void) {
     atexit(cleanup);
 
     initStage();
+    initFont();
     then = SDL_GetTicks();
     remainder = 0;
 
@@ -29,6 +31,8 @@ int main(void) {
         presentScene();
         capFrameRate(&then, &remainder);
     }
+
+    cleanFont();
 
     return 0;
 }
